@@ -12,53 +12,69 @@
 
 #include "ft_printf.h"
 
-static int	checkformat(const char *format, void arg)
-{
-	int	i;
-
-	i = 0;
-	if (*input == 'c')
-		i += print_char((int)arg);
-	else if (*input == 's')
-		i += print_s((char *)arg);
-	else if (*input == 'd')
-		i += print_int((int)arg);
-	else if (*input == 'i')
-		i += print_int((int)arg);
-	else if (*input == 'u')
-		i += print_unsigned((unsigned int)arg);
-	else if (*input == 'x')
-		i += print_hexa((unsigned int)arg);
-	else if (*input == 'X')
-		i += print_hexa((unsigned int)arg);
-	else if (*input == 'p')
-		i += print_pointer((unsigned long)arg);
-	else if (*input == '%')
-		ft_putchar_fd('%', 1);
-		return (1);
-	return (i);
-}
-
-int	ft_printf(const char *test, ...)
+int	ft_printf(const char *s, ...)
 {
 	va_list	args;
-	va_start(args, test);
-	int		i;
+	size_t	i;
+	int value;
 
 	i = 0;
-	while (*test != '\0')
+	va_start(args, s);
+	while(s[i] != '\0')
 	{
-		if (*test == '%')
-			{
-				if (ft_strchr("cspdiuxX", *test))
-					i += checkformat()
-				else if (*test == '%')
-					i += print_char('%');
-			}
+		if (str[i] == '%' && str[i + 1] == 's')
+		{
+			value += print_s(va_arg(args, char *));
+			i++;
+		}
+		else if (str[i] == '%' && str[i + 1] == 'd' || str[i + 1] == 'i')
+		{
+			value += print_int(va_arg(args, int));
+			i++; 
+		}
+		else if (str[i] == '%' && str[i + 1] == 'c')
+		{
+			value += print_char(va_arg(args, int));
+			i++;
+		}
+		else if (str[i] == '%' && str[i + 1] == 'p')
+		{
+			value += print_pointer(va_arg(arg, void *));
+			i++;
+		}
+		else if (str[i] == '%' && str[i + 1] == '%')
+		{
+			value += ft_putchar_fd('%', 1);
+			i++;
+		}
+		else if (str[i] == '%' && str[i + 1] == 'x')
+		{
+			value += print_hex(va_arg(args, unsigned int));
+			i++;
+		}
+		else if (str[i] == '%' && str[i + 1] == 'X')
+		{
+			value += print_majhex(va_arg(args, unsigned int));
+			i++;
+		}
+		else if (str[i] == '%' && str[i + 1] == 'u')
+		{
+			value += print_unsigned(va_arg(args, unsigned int));
+			i++;
+		}
 		else
-			i = i + print_char(*test);
-		test++;
+		{
+			write(1, &str[i], 1);
+			value++;
+		}
+		i++;
 	}
 	va_end(args);
-	return (i);
+	return (value);
+}
+
+int main()
+{
+	ft_printf("%s", "bonjour ca va ?");
+	return 0;
 }
