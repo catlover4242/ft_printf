@@ -12,69 +12,58 @@
 
 #include "ft_printf.h"
 
+int	conversion(const char c, va_list args, int size)
+{
+	int	newsize;
+
+	newsize = 0;
+	if (s == 'c')
+		newsize = ft_putchar(va_arg(args, int), size);
+	else if (s == 's')
+		newsize = print_string(va_arg(args, int), size);
+	else if (s == 's')
+		newsize = print_string(va_arg(args, int), size);
+	else if (s == 'd')
+		newsize = printint(va_arg(args, int), size);
+	else if (s == 'i')
+		newsize = printint(va_arg(args, int), size);
+	else if (s == 'u')
+		newsize = ft_putunbr(va_arg(args, unsigned int), size);
+	else if (s == 'x')
+		newsize = ft_puthexa(va_arg(args, unsigned int), size, 0);
+	else if (s == 'X')
+		newsize = ft_puthexa(va_arg(args, unsigned int), size, 1);
+	else if (s == 'p')
+		newsize = print_string(va_arg(args, int), size);
+	else if (s == '%')
+	{
+		ft_putchar_fd('%', 1);
+		newsize = size + 1;
+	}
+	return (newsize);
+	
+}
 int	ft_printf(const char *s, ...)
 {
-	va_list	args;
-	size_t	i;
-	int value;
+	va_list		args;
+	int			size;
 
-	i = 0;
+	size = 0;
 	va_start(args, s);
-	while(s[i] != '\0')
+	while (*s != '\0')
 	{
-		if (str[i] == '%' && str[i + 1] == 's')
+		if (*s == '%')
 		{
-			value += print_s(va_arg(args, char *));
-			i++;
-		}
-		else if (str[i] == '%' && str[i + 1] == 'd' || str[i + 1] == 'i')
-		{
-			value += print_int(va_arg(args, int));
-			i++; 
-		}
-		else if (str[i] == '%' && str[i + 1] == 'c')
-		{
-			value += print_char(va_arg(args, int));
-			i++;
-		}
-		else if (str[i] == '%' && str[i + 1] == 'p')
-		{
-			value += print_pointer(va_arg(arg, void *));
-			i++;
-		}
-		else if (str[i] == '%' && str[i + 1] == '%')
-		{
-			value += ft_putchar_fd('%', 1);
-			i++;
-		}
-		else if (str[i] == '%' && str[i + 1] == 'x')
-		{
-			value += print_hex(va_arg(args, unsigned int));
-			i++;
-		}
-		else if (str[i] == '%' && str[i + 1] == 'X')
-		{
-			value += print_majhex(va_arg(args, unsigned int));
-			i++;
-		}
-		else if (str[i] == '%' && str[i + 1] == 'u')
-		{
-			value += print_unsigned(va_arg(args, unsigned int));
-			i++;
+			size = conversion(*(s + 1), args, size);
+			s++;
 		}
 		else
 		{
-			write(1, &str[i], 1);
-			value++;
+			write(1, &(*s), 1);
+			size++;
 		}
-		i++;
+		s++;
 	}
 	va_end(args);
-	return (value);
-}
-
-int main()
-{
-	ft_printf("%s", "bonjour ca va ?");
-	return 0;
+	return (size);
 }

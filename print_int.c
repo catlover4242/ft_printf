@@ -12,25 +12,13 @@
 
 #include "ft_printf.h"
 
-int	printint(int n)
+int	printint(int n, int size)
 {
-	int				nb;
-	unsigned int	i;
-
-	n = nb;
-	i = 1;
-	if (n < 0 && n != -2147483648)
+	if (n < 0)
 	{
-		nb = -n;
-		i++;
+		ft_putchar_fd('-', 1);
+		size++;
+		n = -n;
 	}
-	while (nb > 9)
-	{
-		nb = nb / 10;
-		i++;
-	}
-	ft_putnbr_fd(n, 1);
-	if (n == -2147483648)
-		return (11);
-	return (i);
+	size = ft_putunbr(n, size);
 }

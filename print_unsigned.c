@@ -10,22 +10,30 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-static void	printout(unsigned int nb)
+#include "ft_printf.h"
+
+static void	ft_putunbr_fd(unsigned int n, int fd)
 {
-	if (nb > 9)
-		print_unsigned(nb / 10);
-	if (nb <= 9)
-	{
-		ft_putchar_fd(nb + 48, 1);
-		return ;
-	}
-	ft_putchar_fd((nb % 10) + 48, 1); 
+	if (n / 10)
+		ft_putunbr_fd(n / 10, fd);
+	ft_putchar_fd(48 + (n % 10), fd);
 }
 
-int	print_unsigned(unsigned int nb)
+static int	ft_unbrlen(unsigned int args)
 {
-	unsigned int	i;
+	int	i;
 
-	i = 0;
-	
+	i = 1;
+	while (args / 10 > 0)
+	{
+		i++;
+		args /= 10;
+	}
+	return (i);
+}
+
+int	ft_putunbr(unsigned int args, int size)
+{
+	ft_putunbr_fd(args, 1);
+	return (size + ft_unbrlen(args));
 }

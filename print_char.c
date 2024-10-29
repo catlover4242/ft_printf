@@ -12,8 +12,8 @@
 
 #include "ft_printf.h"
 
-int	print_char(char c)
+int	ft_putchar(char c, int size)
 {
-	ft_putchar_fd(c, 1);
-	return (1);
+	ft_putchar_fd((char)c, 1);
+	return (size + 1);
 }
