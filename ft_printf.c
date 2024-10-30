@@ -12,58 +12,54 @@
 
 #include "ft_printf.h"
 
-int	conversion(const char c, va_list args, int size)
+int	conversion(va_list args, const char c)
 {
-	int	newsize;
+	int	count;
 
-	newsize = 0;
-	if (s == 'c')
-		newsize = ft_putchar(va_arg(args, int), size);
-	else if (s == 's')
-		newsize = print_string(va_arg(args, int), size);
-	else if (s == 's')
-		newsize = print_string(va_arg(args, int), size);
-	else if (s == 'd')
-		newsize = printint(va_arg(args, int), size);
-	else if (s == 'i')
-		newsize = printint(va_arg(args, int), size);
-	else if (s == 'u')
-		newsize = ft_putunbr(va_arg(args, unsigned int), size);
-	else if (s == 'x')
-		newsize = ft_puthexa(va_arg(args, unsigned int), size, 0);
-	else if (s == 'X')
-		newsize = ft_puthexa(va_arg(args, unsigned int), size, 1);
-	else if (s == 'p')
-		newsize = print_string(va_arg(args, int), size);
-	else if (s == '%')
-	{
-		ft_putchar_fd('%', 1);
-		newsize = size + 1;
-	}
-	return (newsize);
+	count = 0;
+	if (c == 'c')
+		count += ft_putchar_print(va_arg(args, int));
+	else if (c == 's')
+		count += ft_putstr_print(va_arg(args, char *));
+	else if (c == 'd' || c == 'i')
+		count += ft_printint(va_arg(args, int));
+	else if (c == 'u')
+		count += ft_printint_unsigned(va_arg(args, unsigned int));
+	else if (c == 'x')
+		count += ft_puthexa(va_arg(args, unsigned int), count);
+	else if (c == 'X')
+		count += ft_puthexa_maj(va_arg(args, unsigned int), count);
+	else if (c == 'p')
+		count += ft_pointer(va_arg(args, void *));
+	else if (c == '%')
+		count = ft_putchar_print('%');
+	return (count);
 	
 }
-int	ft_printf(const char *s, ...)
-{
-	va_list		args;
-	int			size;
 
-	size = 0;
-	va_start(args, s);
-	while (*s != '\0')
+int	ft_printf(const char *str, ...)
+{
+	size_t		i;
+	int			returns;
+	va_list		arg;
+
+	i = 0;
+	returns = 0;
+	va_start(arg, str);
+	while (str[i] != '\0')
 	{
-		if (*s == '%')
+		if (str[i] == '%')
 		{
-			size = conversion(*(s + 1), args, size);
-			s++;
+			i++;
+			returns += conversion(arg, str[i]);
 		}
 		else
 		{
-			write(1, &(*s), 1);
-			size++;
+			write(1, &str[i], 1);
+			returns++;
 		}
-		s++;
+		i++;
 	}
-	va_end(args);
-	return (size);
+	va_end(arg);
+	return (returns);
 }

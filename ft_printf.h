@@ -12,16 +12,24 @@
 
 #ifndef FT_PRINTF_H
 # define FT_PRINTF_H
-# define LOWER "0123456789abcdef"
-# define UPPER "0123456789ABCDEF"
+
+# ifndef HEXAA
+# define HEXAA "0123456789abcdef"
+# endif
+
 # include <stdarg.h>
 # include "./libft/libft.h"
-# include <stdarg.h>
+# include <stdio.h>
+# include <limits.h>
+# include <unistd.h>
 
-int	ft_putchar(char c, int size);
-int	print_string(char *s, int size);
-int	printint(int n, int size);
-int ft_putunbr(unsigned int args, int size);
-int ft_puthexa(unsigned int nb, int size, int format);
+int ft_printf(const char *s, ...);
+int ft_putchar_print(char c);
+int ft_putstr_print(char *s);
+int ft_printint(int nb);
+int ft_puthexa_maj(unsigned long nb, int n);
+int ft_puthexa(unsigned long nb, int n);
+int ft_pointer(void *ptr);
+int	ft_printint_unsigned(int nb);
 
 #endif
